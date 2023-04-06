@@ -26,4 +26,3 @@ def minOperations(n):
     for i in factors:
         add += i
     return add
-
