@@ -1,44 +1,44 @@
 #!/usr/bin/python3
-"""Log Parser"""
-import sys
+"""
+This script reads standard input line by line and calculates metrics.
+"""
 
+from sys import stdin
 
-if __name__ == '__main__':
-    file_size = [0]
-    status_codes = {200: 0, 301: 0, 400: 0, 401: 0,
-                    403: 0, 404: 0, 405: 0, 500: 0}
-
-    def print_stats():
-        """ Print statistics """
-        print('File size: {}'.format(file_size[0]))
-        for key in sorted(status_codes.keys()):
-            if status_codes[key]:
-                print('{}: {}'.format(key, status_codes[key]))
-
-    def parse_line(line):
-        """ Checks the line for matches """
-        try:
-            line = line[:-1]
-            word = line.split(' ')
-            # File size is last parameter on stdout
-            file_size[0] += int(word[-1])
-            # Status code comes before file size
-            status_code = int(word[-2])
-            # Move through dictionary of status codes
-            if status_code in status_codes:
-                status_codes[status_code] += 1
-        except BaseException:
-            pass
-
-    linenum = 1
+if __name__ == "__main__":
+    total_size = 0
+    status_counts = {}
+    status_codes = ["200", "301", "400", "401", "403", "404", "405", "500"]
+    for code in status_codes:
+        status_counts[code] = 0
+    count = 0
     try:
-        for line in sys.stdin:
-            parse_line(line)
-            """ print after every 10 lines """
-            if linenum % 10 == 0:
-                print_stats()
-            linenum += 1
+        for line in stdin:
+            try:
+                fields = line.split(" ")
+                if len(fields) != 9:
+                    continue
+                status_code = fields[-2]
+                if status_code in status_codes:
+                    status_counts[status_code] += 1
+                if fields[-1][-1] == '\n':
+                    fields[-1] = fields[-1][:-1]
+                total_size += int(fields[-1])
+            except Exception:
+                pass
+            count += 1
+            if count % 10 == 0:
+                print("Total size: {}".format(total_size))
+                for code in sorted(status_counts.keys()):
+                    if status_counts[code] != 0:
+                        print("{}: {}".format(code, status_counts[code]))
+        print("Total size: {}".format(total_size))
+        for code in sorted(status_counts.keys()):
+            if status_counts[code] != 0:
+                print("{}: {}".format(code, status_counts[code]))
     except KeyboardInterrupt:
-        print_stats()
+        print("Total size: {}".format(total_size))
+        for code in sorted(status_counts.keys()):
+            if status_counts[code] != 0:
+                print("{}: {}".format(code, status_counts[code]))
         raise
-    print_stats()
