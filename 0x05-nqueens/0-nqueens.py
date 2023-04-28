@@ -1,39 +1,35 @@
 #!/usr/bin/python3
-"""A program to solve the N Queens puzzle on an NxN chessboard"""
+"""N Queens placement on NxN chessboard"""
 
 
 import sys
 
 
-def find_solutions(row, column):
-    """Recursively generates all possible N Queens solutions"""
-    result = [[]]
+def generate_solutions(row, column):
+    solution = [[]]
     for queen in range(row):
-        result = place_queen(queen, column, result)
-    return result
+        solution = place_queen(queen, column, solution)
+    return solution
 
 
-def place_queen(queen, column, previous_result):
-    """Places a queen on the next column and returns all safe positions"""
-    safe_positions = []
-    for solution in previous_result:
+def place_queen(queen, column, prev_solution):
+    safe_position = []
+    for array in prev_solution:
         for x in range(column):
-            if is_safe(queen, x, solution):
-                safe_positions.append(solution + [x])
-    return safe_positions
+            if is_safe(queen, x, array):
+                safe_position.append(array + [x])
+    return safe_position
 
 
-def is_safe(q, x, solution):
-    """Checks if a queen can be safely placed at the given position"""
-    if x in solution:
-        return False
+def is_safe(q, x, array):
+    if x in array:
+        return (False)
     else:
-        return all(abs(solution[column] - x) != q - column
+        return all(abs(array[column] - x) != q - column
                    for column in range(q))
 
 
-def initialize():
-    """Parses the command-line argument and checks its validity"""
+def init():
     if len(sys.argv) != 2:
         print("Usage: nqueens N")
         sys.exit(1)
@@ -45,20 +41,21 @@ def initialize():
     if n < 4:
         print("N must be at least 4")
         sys.exit(1)
-    return n
+    return (n)
 
 
-def solve_n_queens():
-    """Solves the N Queens problem and prints all solutions"""
-    n = initialize()
-    solutions = find_solutions(n, n)
-    for solution in solutions:
-        cleaned_solution = []
-        for row, column in enumerate(solution):
-            cleaned_solution.append([row, column])
-        print(cleaned_solution)
+def n_queens():
+
+    n = init()
+    # generate all solutions
+    solutions = generate_solutions(n, n)
+    # print solutions
+    for array in solutions:
+        clean = []
+        for q, x in enumerate(array):
+            clean.append([q, x])
+        print(clean)
 
 
 if __name__ == '__main__':
-    solve_n_queens()
-
+    n_queens()
