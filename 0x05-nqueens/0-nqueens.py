@@ -1,37 +1,64 @@
 #!/usr/bin/python3
-"""
-The N queens puzzle is the challenge of placing 
-N non-attacking queens on an N×N chessboard.
-"""
+"""A program to solve the N Queens puzzle on an NxN chessboard"""
+
 
 import sys
 
 
-def main():
-    """
-    implements all possible solutions to
-    the n queens problem
-    """
+def find_solutions(row, column):
+    """Recursively generates all possible N Queens solutions"""
+    result = [[]]
+    for queen in range(row):
+        result = place_queen(queen, column, result)
+    return result
+
+
+def place_queen(queen, column, previous_result):
+    """Places a queen on the next column and returns all safe positions"""
+    safe_positions = []
+    for solution in previous_result:
+        for x in range(column):
+            if is_safe(queen, x, solution):
+                safe_positions.append(solution + [x])
+    return safe_positions
+
+
+def is_safe(q, x, solution):
+    """Checks if a queen can be safely placed at the given position"""
+    if x in solution:
+        return False
+    else:
+        return all(abs(solution[column] - x) != q - column
+                   for column in range(q))
+
+
+def initialize():
+    """Parses the command-line argument and checks its validity"""
     if len(sys.argv) != 2:
-        print('Usage: nqueens N')
+        print("Usage: nqueens N")
         sys.exit(1)
-
-    try:
+    if sys.argv[1].isdigit():
         n = int(sys.argv[1])
-    except ValueError:
-        print('N must be a number')
+    else:
+        print("N must be a number")
         sys.exit(1)
-
     if n < 4:
-        print('N must be at least 4')
+        print("N must be at least 4")
         sys.exit(1)
+    return n
 
-    aux = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    board = {}
-    for i in range(1, n + 1):
-        board[i] = aux[i - 1]
 
-    return []
+def solve_n_queens():
+    """Solves the N Queens problem and prints all solutions"""
+    n = initialize()
+    solutions = find_solutions(n, n)
+    for solution in solutions:
+        cleaned_solution = []
+        for row, column in enumerate(solution):
+            cleaned_solution.append([row, column])
+        print(cleaned_solution)
+
 
 if __name__ == '__main__':
-    main()
+    solve_n_queens()
+
