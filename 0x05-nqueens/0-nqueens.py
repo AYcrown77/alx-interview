@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-Module for the N queens puzzle
+The N queens puzzle is the challenge of placing 
+N non-attacking queens on an N×N chessboard.
 """
 
 import sys
@@ -8,7 +9,7 @@ import sys
 
 def main():
     """
-    Function that implements all possible solutions to
+    implements all possible solutions to
     the n queens problem
     """
     if len(sys.argv) != 2:
@@ -25,10 +26,10 @@ def main():
         print('N must be at least 4')
         sys.exit(1)
 
-    alph = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    aux = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     board = {}
     for i in range(1, n + 1):
-        board[i] = alph[i - 1]
+        board[i] = aux[i - 1]
 
     return []
 
